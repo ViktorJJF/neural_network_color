@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Color Neural Network</title>
+    <style>
+      #site {
+        padding: 5rem;
+        font-size: 5rem;
+        margin-left: 15rem;
+      }
+    </style>
+  </head>
+  <body>
+    <script src="./jscolor-onchange-and-oninput-events/jscolor.js"></script>
+    <script src="https://unpkg.com/brain.js"></script>
+    <input
+      onChange="update(this.jscolor, '#pr3')"
+      onInput="update(this.jscolor, '#pr4')"
+      value="CCFFAA"
+      data-jscolor="{alpha:0.7}"
+    />
+    <div id="site">
+      <span id="text">Viktor World</span>
+    </div>
+
+    <script>
+      // initialice the neural network
+      const network = new brain.NeuralNetwork();
+      network.train([
+        {
+          input: { red: 0, green: 0, blue: 0 },
+          output: { color: 1 },
+        },
+        {
+          input: { red: 1, green: 1, blue: 1 },
+          output: { color: 0 },
+        },
+        {
+          input: { red: 0, green: 1, blue: 0 },
+          output: { color: 0 },
+        },
+      ]);
+
+      function update(picker, selector) {
+        const { r, g, b } = picker.channels;
+        console.log("🚀 Aqui *** -> [r, g, b]", [r, g, b]);
+        let div = document.querySelector("#site");
+        let text = document.querySelector("#text");
+        div.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
+        const input = {
+          red: r / 255,
+          green: g / 255,
+          blue: b / 255,
+        };
+        const result = network.run(input);
+        console.log("🚀 Aqui *** -> result", result);
+        if (result.color > 0.5) {
+          text.style.color = "white";
+        } else {
+          text.style.color = "black";
+        }
+      }
+
+      function neuralNetwork(red, green, blue) {
+        let isBlackOrWhite;
+        return isBlackOrWhite; // could be 1 = white, 0=black
+      }
+
+      // triggers 'onInput' and 'onChange' on all color pickers when they are ready
+      jscolor.trigger("input change");
+    </script>
+  </body>
+</html>
